@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
@@ -41,9 +40,10 @@ const Index = () => {
   
   const handleDeleteFile = () => {
     setFile(null);
-    setIsReady(false);
+    // Keep isReady true so the chat interface remains visible
+    // setIsReady(false); <- This was causing the chat to disappear
     toast.success("PDF deleted successfully. You can now upload a new one.");
-    // We don't clear chatHistory anymore
+    // We don't clear chatHistory - it's kept as is
   };
   
   const formatFileSize = (size: number): string => {
@@ -111,26 +111,65 @@ const Index = () => {
               <div className="lg:col-span-1">
                 <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 border shadow-sm h-full flex flex-col">
                   <h2 className="text-lg font-medium mb-4">Document</h2>
-                  <div className="p-4 border rounded-md bg-white/50 flex items-center gap-3 mb-auto">
-                    <div className="p-2 rounded-full bg-primary/10">
-                      <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                  {file ? (
+                    <div className="p-4 border rounded-md bg-white/50 flex items-center gap-3 mb-auto">
+                      <div className="p-2 rounded-full bg-primary/10">
+                        <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-sm truncate">{file.name}</h3>
+                        <p className="text-muted-foreground text-xs">{formatFileSize(file.size)}</p>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleDeleteFile}
+                        className="text-red-500 hover:bg-red-100 hover:text-red-600"
+                        title="Delete PDF"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium text-sm truncate">{file?.name}</h3>
-                      <p className="text-muted-foreground text-xs">{file && formatFileSize(file.size)}</p>
+                  ) : (
+                    <div className="p-4 border rounded-md bg-white/50 flex items-center gap-3 mb-auto">
+                      <div className="p-2 rounded-full bg-primary/10">
+                        <svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-medium text-sm">No PDF uploaded</h3>
+                        <p className="text-muted-foreground text-xs">Upload a new PDF to analyze</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => document.getElementById('file-upload')?.click()}
+                        className="text-primary hover:bg-primary/10"
+                        title="Upload PDF"
+                      >
+                        Upload
+                      </Button>
+                      <input
+                        id="file-upload"
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files.length > 0) {
+                            const file = e.target.files[0];
+                            if (file.type !== 'application/pdf') {
+                              toast.error("Please upload a PDF file");
+                              return;
+                            }
+                            handleFileUpload(file);
+                          }
+                        }}
+                        accept=".pdf"
+                      />
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={handleDeleteFile}
-                      className="text-red-500 hover:bg-red-100 hover:text-red-600"
-                      title="Delete PDF"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  )}
                   
                   <div className="mt-4 pt-4 border-t">
                     <h3 className="text-sm font-medium mb-2">What can you do?</h3>
@@ -153,14 +192,12 @@ const Index = () => {
               </div>
               
               <div className="lg:col-span-2 h-[600px]">
-                {file && (
-                  <ChatInterface
-                    fileName={file.name}
-                    fileSize={formatFileSize(file.size)}
-                    messages={chatHistory}
-                    setMessages={setChatHistory}
-                  />
-                )}
+                <ChatInterface
+                  fileName={file ? file.name : "No file uploaded"}
+                  fileSize={file ? formatFileSize(file.size) : ""}
+                  messages={chatHistory}
+                  setMessages={setChatHistory}
+                />
               </div>
             </div>
           )}
