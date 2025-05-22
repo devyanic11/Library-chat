@@ -10,18 +10,18 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [chatHistory, setChatHistory] = useState<any[]>([]);
-  
+
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile);
     setIsProcessing(true);
-    
+
     // Simulate processing time
     toast.info("Processing your PDF...");
-    
+
     setTimeout(() => {
       setIsProcessing(false);
       setIsReady(true);
-      
+
       // Initialize chat with welcome message only if there's no chat history
       if (chatHistory.length === 0) {
         setChatHistory([
@@ -33,11 +33,11 @@ const Index = () => {
           }
         ]);
       }
-      
+
       toast.success("PDF processed successfully!");
     }, 2000);
   };
-  
+
   const handleDeleteFile = () => {
     setFile(null);
     // Keep isReady true so the chat interface remains visible
@@ -45,22 +45,22 @@ const Index = () => {
     toast.success("PDF deleted successfully. You can now upload a new one.");
     // We don't clear chatHistory - it's kept as is
   };
-  
+
   const formatFileSize = (size: number): string => {
     if (size < 1024) return `${size} bytes`;
     else if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
     else return `${(size / (1024 * 1024)).toFixed(2)} MB`;
   };
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-pink-100 flex flex-col">
       <header className="py-6 px-4 sm:px-6 border-b bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-medium text-gray-800">Chat with any PDF</h1>
+          <h1 className="text-2xl font-medium text-gray-800">Chat with any Book</h1>
           <p className="text-muted-foreground">Upload a PDF and chat with its content</p>
         </div>
       </header>
-      
+
       <main className="flex-1 py-8 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto flex flex-col h-full">
           {!isReady ? (
@@ -69,23 +69,23 @@ const Index = () => {
                 {isProcessing ? "Processing your PDF..." : "Get started by uploading a PDF"}
               </h2>
               <FileUpload onFileUpload={handleFileUpload} isLoading={isProcessing} />
-              
+
               <div className="mt-8 flex justify-center gap-4">
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <MessageSquare className="h-4 w-4" />
-                  Join Chat
+                  Temporary Chat
                 </Button>
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <Twitter className="h-4 w-4" />
-                  Post to Twitter
+                  Easy Chat
                 </Button>
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <Facebook className="h-4 w-4" />
-                  Share on Facebook
+                  Share your conversation
                 </Button>
               </div>
-              
-              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+
+              {/* { <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border shadow-sm">
                   <h3 className="font-medium mb-2">For Students</h3>
                   <p className="text-sm text-muted-foreground">
@@ -104,7 +104,7 @@ const Index = () => {
                     Unlock knowledge with PDF Chat. Discover insights from historical documents, poetry, and literature.
                   </p>
                 </div>
-              </div>
+              </div> } */}
             </div>
           ) : (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 h-full animate-fade-in">
@@ -170,7 +170,7 @@ const Index = () => {
                       />
                     </div>
                   )}
-                  
+
                   <div className="mt-4 pt-4 border-t">
                     <h3 className="text-sm font-medium mb-2">What can you do?</h3>
                     <ul className="space-y-2">
@@ -190,7 +190,7 @@ const Index = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="lg:col-span-2 h-[600px]">
                 <ChatInterface
                   fileName={file ? file.name : "No file uploaded"}
@@ -203,20 +203,10 @@ const Index = () => {
           )}
         </div>
       </main>
-      
+
       <footer className="py-4 px-4 sm:px-6 border-t bg-white/50 backdrop-blur-sm text-center text-sm text-muted-foreground">
-        <div className="flex justify-center space-x-4 mb-2">
-          <a href="#" className="hover:underline">My Account</a>
-          <span>•</span>
-          <a href="#" className="hover:underline">Pricing</a>
-          <span>•</span>
-          <a href="#" className="hover:underline">API</a>
-          <span>•</span>
-          <a href="#" className="hover:underline">FAQ</a>
-          <span>•</span>
-          <a href="#" className="hover:underline">Contact</a>
-        </div>
-        PDF Chat — Upload and chat with your documents
+
+        Personalised Library
       </footer>
     </div>
   );
