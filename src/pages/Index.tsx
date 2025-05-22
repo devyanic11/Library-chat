@@ -3,7 +3,7 @@ import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/sonner';
-import { ChevronRight, Trash2, Discord, Twitter, Facebook } from 'lucide-react';
+import { ChevronRight, Trash2, MessageSquare, Twitter, Facebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
@@ -72,8 +72,8 @@ const Index = () => {
               
               <div className="mt-8 flex justify-center gap-4">
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
-                  <Discord className="h-4 w-4" />
-                  Join Discord
+                  <MessageSquare className="h-4 w-4" />
+                  Join Chat
                 </Button>
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
                   <Twitter className="h-4 w-4" />
