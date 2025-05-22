@@ -3,7 +3,8 @@ import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/sonner';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,6 +23,12 @@ const Index = () => {
       setIsReady(true);
       toast.success("PDF processed successfully!");
     }, 2000);
+  };
+  
+  const handleDeleteFile = () => {
+    setFile(null);
+    setIsReady(false);
+    toast.success("PDF deleted successfully. You can now upload a new one.");
   };
   
   const formatFileSize = (size: number): string => {
@@ -63,6 +70,15 @@ const Index = () => {
                       <h3 className="font-medium text-sm truncate">{file?.name}</h3>
                       <p className="text-muted-foreground text-xs">{file && formatFileSize(file.size)}</p>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleDeleteFile}
+                      className="text-red-500 hover:bg-red-100 hover:text-red-600"
+                      title="Delete PDF"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
                   </div>
                   
                   <div className="mt-4 pt-4 border-t">
