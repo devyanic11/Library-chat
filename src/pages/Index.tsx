@@ -3,6 +3,7 @@ import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/sonner';
+import { ChevronRight } from 'lucide-react';
 
 const Index = () => {
   const [file, setFile] = useState<File | null>(null);
