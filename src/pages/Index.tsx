@@ -3,13 +3,14 @@ import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
 import ChatInterface from '@/components/ChatInterface';
 import { toast } from '@/components/ui/sonner';
-import { ChevronRight, Trash2 } from 'lucide-react';
+import { ChevronRight, Trash2, Discord, Twitter, Facebook } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReady, setIsReady] = useState(false);
+  const [chatHistory, setChatHistory] = useState<any[]>([]);
   
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile);
@@ -21,6 +22,19 @@ const Index = () => {
     setTimeout(() => {
       setIsProcessing(false);
       setIsReady(true);
+      
+      // Initialize chat with welcome message only if there's no chat history
+      if (chatHistory.length === 0) {
+        setChatHistory([
+          {
+            id: '1',
+            content: `I've processed your PDF "${uploadedFile.name}" (${formatFileSize(uploadedFile.size)}). What would you like to know about it?`,
+            isUser: false,
+            timestamp: new Date(),
+          }
+        ]);
+      }
+      
       toast.success("PDF processed successfully!");
     }, 2000);
   };
@@ -29,6 +43,7 @@ const Index = () => {
     setFile(null);
     setIsReady(false);
     toast.success("PDF deleted successfully. You can now upload a new one.");
+    // We don't clear chatHistory anymore
   };
   
   const formatFileSize = (size: number): string => {
@@ -38,10 +53,10 @@ const Index = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gradient-lavender flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-pink-100 flex flex-col">
       <header className="py-6 px-4 sm:px-6 border-b bg-white/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-2xl font-medium text-gray-800">PDF Chat</h1>
+          <h1 className="text-2xl font-medium text-gray-800">Chat with any PDF</h1>
           <p className="text-muted-foreground">Upload a PDF and chat with its content</p>
         </div>
       </header>
@@ -54,6 +69,42 @@ const Index = () => {
                 {isProcessing ? "Processing your PDF..." : "Get started by uploading a PDF"}
               </h2>
               <FileUpload onFileUpload={handleFileUpload} isLoading={isProcessing} />
+              
+              <div className="mt-8 flex justify-center gap-4">
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Discord className="h-4 w-4" />
+                  Join Discord
+                </Button>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Twitter className="h-4 w-4" />
+                  Post to Twitter
+                </Button>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Facebook className="h-4 w-4" />
+                  Share on Facebook
+                </Button>
+              </div>
+              
+              <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border shadow-sm">
+                  <h3 className="font-medium mb-2">For Students</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Enhance your learning experience with PDF Chat. Comprehend textbooks, handouts, and presentations effortlessly.
+                  </p>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border shadow-sm">
+                  <h3 className="font-medium mb-2">For Work</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Efficiently analyze your documents. From financial reports to business proposals and legal contracts.
+                  </p>
+                </div>
+                <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 border shadow-sm">
+                  <h3 className="font-medium mb-2">For Curious Minds</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Unlock knowledge with PDF Chat. Discover insights from historical documents, poetry, and literature.
+                  </p>
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 h-full animate-fade-in">
@@ -106,6 +157,8 @@ const Index = () => {
                   <ChatInterface
                     fileName={file.name}
                     fileSize={formatFileSize(file.size)}
+                    messages={chatHistory}
+                    setMessages={setChatHistory}
                   />
                 )}
               </div>
@@ -115,6 +168,17 @@ const Index = () => {
       </main>
       
       <footer className="py-4 px-4 sm:px-6 border-t bg-white/50 backdrop-blur-sm text-center text-sm text-muted-foreground">
+        <div className="flex justify-center space-x-4 mb-2">
+          <a href="#" className="hover:underline">My Account</a>
+          <span>•</span>
+          <a href="#" className="hover:underline">Pricing</a>
+          <span>•</span>
+          <a href="#" className="hover:underline">API</a>
+          <span>•</span>
+          <a href="#" className="hover:underline">FAQ</a>
+          <span>•</span>
+          <a href="#" className="hover:underline">Contact</a>
+        </div>
         PDF Chat — Upload and chat with your documents
       </footer>
     </div>

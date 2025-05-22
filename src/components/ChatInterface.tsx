@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar } from '@/components/ui/avatar';
-import { ArrowUp, ChevronRight, FileText } from 'lucide-react';
+import { ArrowUp, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -16,17 +16,11 @@ interface Message {
 interface ChatInterfaceProps {
   fileName: string;
   fileSize: string;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
 }
 
-export default function ChatInterface({ fileName, fileSize }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: `I've processed your PDF "${fileName}" (${fileSize}). What would you like to know about it?`,
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+export default function ChatInterface({ fileName, fileSize, messages, setMessages }: ChatInterfaceProps) {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
