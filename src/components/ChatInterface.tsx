@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from '@/components/ui/sonner';
 import { Send, Loader2 } from 'lucide-react';
+import Markdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -126,7 +127,13 @@ export default function ChatInterface({ resetTrigger = 0, file, fileName, fileSi
                 </div>
               ) : (
                 <>
-                  <div>{message.content}</div>
+                  <div>
+                    {message.role === 'assistant' ? (
+                      <Markdown>{message.content}</Markdown>
+                    ) : (
+                      message.content
+                    )}
+                  </div>
                   {message.sources && message.sources.length > 0 && (
                     <div className="mt-2 text-sm text-muted-foreground">
                       <div className="font-medium mb-1">Sources:</div>

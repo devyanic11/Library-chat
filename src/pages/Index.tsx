@@ -10,19 +10,16 @@ const Index = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isReady, setIsReady] = useState(false);
   const [chatHistory, setChatHistory] = useState<any[]>([]);
+  const [resetTrigger, setResetTrigger] = useState(0); // Add this
 
+  // Only update state after successful upload
   const handleFileUpload = (uploadedFile: File) => {
     setFile(uploadedFile);
     setIsProcessing(true);
-
-    // Simulate processing time
     toast.info("Processing your PDF...");
-
     setTimeout(() => {
       setIsProcessing(false);
       setIsReady(true);
-
-      // Initialize chat with welcome message only if there's no chat history
       if (chatHistory.length === 0) {
         setChatHistory([
           {
@@ -33,17 +30,17 @@ const Index = () => {
           }
         ]);
       }
-
       toast.success("PDF processed successfully! You can now ask questions.");
     }, 2000);
   };
 
-  const handleDeleteFile = () => {
+  const handleDeleteFile = async () => {
     setFile(null);
-    // Keep isReady true so the chat interface remains visible
-    // setIsReady(false); <- This was causing the chat to disappear
+    setIsReady(false);
+    setIsProcessing(false);
+    setResetTrigger(prev => prev + 1); // Force FileUpload to remount
+    await fetch('http://127.0.0.1:8000/reset/', { method: 'POST' });
     toast.success("PDF deleted successfully. You can now upload a new one.");
-    // We don't clear chatHistory - it's kept as is
   };
 
   const formatFileSize = (size: number): string => {
@@ -68,7 +65,11 @@ const Index = () => {
               <h2 className="text-xl font-medium text-center mb-6">
                 {isProcessing ? "Processing your PDF..." : "Get started by uploading a PDF"}
               </h2>
-              <FileUpload onFileUpload={handleFileUpload} isLoading={isProcessing} />
+              <FileUpload
+                key={resetTrigger}
+                onFileUpload={handleFileUpload}
+                isLoading={isProcessing}
+              />
 
               <div className="mt-8 flex justify-center gap-4">
                 <Button variant="outline" size="sm" className="flex items-center gap-2">
