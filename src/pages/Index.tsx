@@ -34,7 +34,7 @@ const Index = () => {
         ]);
       }
 
-      toast.success("PDF processed successfully!");
+      toast.success("PDF processed successfully! You can now ask questions.");
     }, 2000);
   };
 
@@ -193,10 +193,12 @@ const Index = () => {
 
               <div className="lg:col-span-2 h-[600px]">
                 <ChatInterface
+                  file={file}
                   fileName={file ? file.name : "No file uploaded"}
                   fileSize={file ? formatFileSize(file.size) : ""}
                   messages={chatHistory}
                   setMessages={setChatHistory}
+                  isReady={isReady}
                 />
               </div>
             </div>

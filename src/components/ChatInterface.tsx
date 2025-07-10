@@ -13,10 +13,15 @@ interface Message {
 
 interface ChatInterfaceProps {
   resetTrigger?: number; // Add this prop to trigger reset
+  file?: File | null; // Add this prop to track the uploaded file
+  fileName: string; // Add this prop to display the file name
+  fileSize: string; // Add this prop to display the file size
+  messages: Message[]; // Add this prop to pass messages
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>; // Add this prop to set messages
+  isReady: boolean; // <-- add this
 }
 
-export default function ChatInterface({ resetTrigger = 0 }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
+export default function ChatInterface({ resetTrigger = 0, file, fileName, fileSize, messages, setMessages, isReady }: ChatInterfaceProps) {
   const [question, setQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -41,6 +46,11 @@ export default function ChatInterface({ resetTrigger = 0 }: ChatInterfaceProps) 
 
     if (!question.trim()) return;
 
+    if (!file || !isReady) {
+      toast.error("Please wait until the PDF is processed before asking questions.");
+      return;
+    }
+
     // Add user message to chat
     const userMessage: Message = {
       role: 'user',
@@ -62,7 +72,7 @@ export default function ChatInterface({ resetTrigger = 0 }: ChatInterfaceProps) 
       const formData = new FormData();
       formData.append('question', question);
 
-      const response = await fetch('http://localhost:8000/ask/', {
+      const response = await fetch('http://127.0.0.1:8000/ask/', {
         method: 'POST',
         body: formData,
       });
@@ -141,10 +151,10 @@ export default function ChatInterface({ resetTrigger = 0 }: ChatInterfaceProps) 
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Ask a question about your PDF..."
-            disabled={isLoading}
+            disabled={isLoading || !file || !isReady}
             className="flex-1"
           />
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading || !file || !isReady}>
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -152,6 +162,16 @@ export default function ChatInterface({ resetTrigger = 0 }: ChatInterfaceProps) 
             )}
           </Button>
         </div>
+        {!file && (
+          <p className="text-sm text-muted-foreground mt-2">
+            Please upload a PDF first to ask questions.
+          </p>
+        )}
+        {file && !isReady && (
+          <p className="text-sm text-muted-foreground mt-2">
+            Processing PDF... Please wait.
+          </p>
+        )}
       </form>
     </div>
   );
