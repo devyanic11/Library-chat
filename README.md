@@ -2,6 +2,8 @@
 
 Library Chat is a web application that allows you to upload any PDF (such as books, reports, or papers) and chat with its content using an AI assistant. Ask questions, get summaries, and extract information from your documents instantly.
 
+Report: [Available Here](https://docs.google.com/document/d/1GwxShGOdo-ftSVPPXUDFJD6mbjZvfvk7oDzsKtwp5Vo/edit?usp=sharing)
+
 ## Features
 
 - 📄 **Upload PDF**: Drag and drop or select a PDF to upload and process.
